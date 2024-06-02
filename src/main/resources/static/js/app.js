@@ -43,9 +43,11 @@ function disconnect() {
 }
 
 function sendName() {
+    var nameValue = $("#name").text();
+
     stompClient.publish({
         destination: "/app/hello",
-        body: JSON.stringify({'name': $("#name").val()})
+        body: JSON.stringify({'name': nameValue})
     });
 }
 
