@@ -23,7 +23,7 @@ public class RoomController {
     public String chatRoomPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){
         List<ChatRoom> chatRooms = chatRoomService.chatLists();
         model.addAttribute("chatRooms", chatRooms);
-        model.addAttribute("name", userDetails.getUser().getId());
+        model.addAttribute("username", userDetails.getUser().getId());
         return "chatRoom";
     }
 
