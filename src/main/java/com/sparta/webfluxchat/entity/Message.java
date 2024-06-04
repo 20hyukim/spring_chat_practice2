@@ -15,13 +15,13 @@ public class Message {
     private String content;
     private long timestamp;
     private Long userId;
+    private String username;
 
-    public Message() {}
-
-    public Message(String content, long timestamp, Long id) {
+    public Message(String content, long timestamp, Long id, String username) {
         this.content = content;
         this.timestamp = timestamp;
         this.userId = id;
+        this.username = username;
     }
 
 }

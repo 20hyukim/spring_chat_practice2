@@ -43,7 +43,7 @@ public class ChatController {
     public Mono<Void> sendMessage(@RequestParam String message,
                                   @RequestParam Long roomnumber,
                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return chatService.saveMessage(message, roomnumber, userDetails.getUser().getId())
+        return chatService.saveMessage(message, roomnumber, userDetails)
                 .doOnNext(msg -> sink.tryEmitNext(msg))
                 .then();
         //hi

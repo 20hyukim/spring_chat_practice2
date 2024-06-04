@@ -20,9 +20,10 @@ public class RoomController {
     private final ChatRoomService chatRoomService;
 
     @GetMapping("/")
-    public String chatRoomPage(Model model){
+    public String chatRoomPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){
         List<ChatRoom> chatRooms = chatRoomService.chatLists();
         model.addAttribute("chatRooms", chatRooms);
+        model.addAttribute("name", userDetails.getUser().getUsername());
         return "chatRoom";
     }
 
