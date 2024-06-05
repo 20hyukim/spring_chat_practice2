@@ -46,6 +46,5 @@ public class ChatController {
         return chatService.saveMessage(message, roomnumber, userDetails)
                 .doOnNext(msg -> sink.tryEmitNext(msg))
                 .then();
-        //hi
     }
 }
