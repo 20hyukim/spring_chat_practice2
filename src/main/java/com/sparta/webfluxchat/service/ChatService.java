@@ -2,6 +2,7 @@ package com.sparta.webfluxchat.service;
 
 import com.sparta.webfluxchat.entity.Message;
 import com.sparta.webfluxchat.security.UserDetailsImpl;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,14 @@ public class ChatService {
     @Autowired
     private ReactiveMongoTemplate reactiveMongoTemplate;
 
+    @Transactional
     public Mono<Message> saveMessage(String message, Long roomnumber, UserDetailsImpl userDetails) {
         Message msg = new Message(message, System.currentTimeMillis(), userDetails.getUser().getId(), userDetails.getUser().getUsername());
         String collectionName = "messages_room_" + roomnumber;
         return reactiveMongoTemplate.save(msg, collectionName);
     }
 
+    @Transactional
     public Flux<Message> findMessagesByRoomId(Long roomId) {
         String collectionName = "messages_room_" + roomId;
         logger.info("Finding messages in collection: {}", collectionName);
