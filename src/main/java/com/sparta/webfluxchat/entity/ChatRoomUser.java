@@ -21,5 +21,4 @@ public class ChatRoomUser {
     private User user;
 
 
-
 }
