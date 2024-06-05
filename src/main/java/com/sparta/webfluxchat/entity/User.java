@@ -32,7 +32,7 @@ public class User {
     @Enumerated(value = EnumType.STRING) //enum type을 db에 저장하고자 할 떄 // Enum type이 만약 USER라고 할 때, USER 그대로 db에 저장되는
     private UserRoleEnum role;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER) // LazyInitializationException 의 이유로 EAGER 처리, 다른 해결 방법은 없을까
     private List<ChatRoomUser> chatRoomUsers;
 
     public User(String username, String password, String email, UserRoleEnum role) {
