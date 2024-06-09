@@ -17,6 +17,7 @@
 <div id="name" th:text="${name}" class="hidden"></div>
 <div class="container">
     <h1>Chat Rooms</h1>
+    <a th:href="@{'/api/user/page'}" class="btn btn-primary">My Page</a>
     <div class="row">
         <!-- Iterate through the list of chat rooms -->
         <div class="col-md-4" th:each="chatRoom : ${chatRooms}">
