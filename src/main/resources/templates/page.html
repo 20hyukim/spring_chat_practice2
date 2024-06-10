@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="card">
+    <div class="card-body">
+        <h5 th:text="${username}">Chat Room Name</h5>
+        <img th:if="${image}" th:src="@{${image}}" />
+        <img th:unless="${image}" th:src="@{/images/default.jpeg}" />
+    </div>
+</div>
+</body>
+</html>
