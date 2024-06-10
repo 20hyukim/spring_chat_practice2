@@ -1,0 +1,33 @@
+package com.sparta.webfluxchat.controller.api;
+
+import com.sparta.webfluxchat.security.UserDetailsImpl;
+import com.sparta.webfluxchat.service.MyPageService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
+@Controller
+@RequiredArgsConstructor
+public class MyPageController {
+
+    private final MyPageService myPageService;
+    @GetMapping("/user/page")
+    public String myPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        model.addAttribute("username", userDetails.getUser().getUsername());
+        model.addAttribute("image", userDetails.getUser().getImageUrl());
+        return "page";
+    }
+
+    @PatchMapping("/user/image")
+    public String myImage(@RequestParam(value="image") MultipartFile image, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        myPageService.setImage(image, userDetails.getUser().getId());
+        return "redirect:/page";
+    }
+}
