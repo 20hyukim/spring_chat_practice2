@@ -13,6 +13,14 @@
         <img th:if="${image}" th:src="@{${image}}" />
         <img th:unless="${image}" th:src="@{/images/default.jpeg}" />
     </div>
+
+    <div class="col-md-4" th:each="friend : ${friends}">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${friend.getFriendId()}">Chat Room Name</h5>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>
