@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,8 +36,12 @@ public class User {
     @Column
     private String imageUrl;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER) // LazyInitializationException 의 이유로 EAGER 처리, 다른 해결 방법은 없을까
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) // LazyInitializationException 의 이유로 EAGER 처리, 다른 해결 방법은 없을까
     private List<ChatRoomUser> chatRoomUsers;
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Friend> friends;
 
 
     public User(String username, String password, String email, UserRoleEnum role) {
@@ -44,5 +49,13 @@ public class User {
         this.password = password;
         this.email = email;
         this.role = role;
+    }
+
+    public void addFriend(Friend friend) {
+        if (this.friends == null) {
+            this.friends = new ArrayList<>();
+        }
+        this.friends.add(friend);
+        friend.setUser(this);
     }
 }
