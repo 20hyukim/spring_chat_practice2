@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -51,10 +52,9 @@ public class MyPageService {
 
     @Transactional
     public void setFriend(Long friendId, User user) {
-        user = userRepository.findById(user.getId()).orElseThrow();
+        user = userRepository.findById(user.getId()).orElseThrow(); // 사용자 정보 불러오기
 
-        Optional<User> userFriendOptional = userRepository.findById(friendId);
-
+        Optional<User> userFriendOptional = userRepository.findById(friendId); // 친구 정보 불러오기
         User userFriend;
         if (userFriendOptional.isPresent()) {
             userFriend = userFriendOptional.get();
@@ -62,19 +62,23 @@ public class MyPageService {
             throw new IllegalArgumentException("유효하지 않은 친구 번호 입니다.");
         }
 
-        Friend newFriend = new Friend(user, userFriend.getId());
-
-        if(user.getFriends() == null){ // 이 코드의 필요성 다시 확인해보기.
-            user.setFriends(new ArrayList<>());
+        if (Objects.equals(user.getId(), friendId)) {
+            throw new IllegalArgumentException("자기 자신을 친구 추가 할 수 없습니다.");
         }
+
+        for (Friend friend : user.getFriends()) {
+            if (Objects.equals(friend.getFriendId(), friendId)) {
+                throw new IllegalArgumentException("이미 친구 추가 완료된 아이디 입니다.");
+            }
+        }
+
+        Friend newFriend = new Friend(user, userFriend.getId());
 
         user.addFriend(newFriend);
 
         friendRepository.save(newFriend);
         userRepository.save(user);
 
-        for (Friend friend : user.getFriends()) {
-            log.info("setfriend {}", friend.getFriendId());
-        }
+
     }
 }
