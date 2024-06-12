@@ -29,43 +29,31 @@ public class MyPageService {
 
     @Transactional
     public List<FriendDto> getFriendList(Long id) {
-        User user = userRepository.findById(id).orElseThrow();
+        User user = findUserByIdAndCheckPresent(id, false);
 
         List<FriendDto> friendDtos = new ArrayList<>();
         for (Friend friend : user.getFriends()) {
-
-            User friendUser = findUserByIdAndCheckPresent(friend);
-
+            User friendUser = findUserByIdAndCheckPresent(friend.getFriendId(), true);
             FriendDto friendDto = new FriendDto(friendUser.getUsername(), friendUser.getImageUrl());
             friendDtos.add(friendDto);
         }
         return friendDtos;
-
     }
-
-    private User findUserByIdAndCheckPresent(Friend friend) {
-        Optional<User> friendUserOptional= userRepository.findById(friend.getFriendId());
-        if (friendUserOptional.isPresent()) {
-            return friendUserOptional.get();
-        }
-        throw new IllegalArgumentException(ErrorEnum.NOT_FOUND_FRIEND.getMessage());
-    }
-
 
     @Transactional
     public void setImage(MultipartFile image, Long id) throws IOException {
         String storedFileName = s3Uploader.upload(image, "image");
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(ErrorEnum.NOT_FOUND_USER.getMessage()));
+        User user = findUserByIdAndCheckPresent(id, false);
         user.setImageUrl(storedFileName);
         userRepository.save(user);
     }
 
     @Transactional
     public void setFriend(Long friendId, User user) {
-        user = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException(ErrorEnum.NOT_FOUND_USER.getMessage())); // 사용자 정보 불러오기
+        user = findUserByIdAndCheckPresent(user.getId(), false);
+        User userFriend = findUserByIdAndCheckPresent(friendId, true);
 
-        Optional<User> userFriendOptional = userRepository.findById(friendId); // 친구 정보 불러오기
-        User userFriend = checkFriendId(friendId, user, userFriendOptional);
+        checkFriendId(friendId, user);
 
         Friend newFriend = new Friend(user, userFriend.getId());
         user.addFriend(newFriend);
@@ -74,14 +62,20 @@ public class MyPageService {
         userRepository.save(user);
     }
 
-    private static User checkFriendId(Long friendId, User user, Optional<User> userFriendOptional) {
-        User userFriend;
-        if (userFriendOptional.isPresent()) {
-            userFriend = userFriendOptional.get();
-        } else {
+
+    private User findUserByIdAndCheckPresent(Long id, boolean friend) {
+        Optional<User> UserOptional= userRepository.findById(id);
+        if (UserOptional.isPresent()) {
+            return UserOptional.get();
+        }
+        if (friend) {
             throw new IllegalArgumentException(ErrorEnum.NOT_FOUND_FRIEND.getMessage());
         }
+        throw new IllegalArgumentException(ErrorEnum.NOT_FOUND_USER.getMessage());
+    }
 
+
+    private static void checkFriendId(Long friendId, User user) {
         if (Objects.equals(user.getId(), friendId)) {
             throw new IllegalArgumentException(ErrorEnum.BAD_OWN_REQUEST.getMessage());
         }
@@ -91,6 +85,5 @@ public class MyPageService {
                 throw new IllegalArgumentException(ErrorEnum.COMPLETED_REQUEST.getMessage());
             }
         }
-        return userFriend;
     }
 }
