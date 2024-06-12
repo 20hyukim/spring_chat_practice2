@@ -1,29 +1,80 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Profile Page</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .profile-card {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #add8e6; /* 연한 하늘색 배경 */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            display: flex;
+            align-items: center;
+        }
+        .friend-card {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #d8bfd8; /* 연한 보라색 배경 */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            display: flex;
+            align-items: center;
+        }
+        .profile-card img, .friend-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+        .card-body {
+            text-align: left;
+        }
+        .card-body h5 {
+            margin: 0;
+        }
+        .return-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-decoration: none;
+            color: #555555; /* 진한 회색 */
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .return-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 
-<div class="card">
+<a href="/" class="return-link">채팅방으로 돌아가기</a>
+
+<div class="profile-card card">
+    <img th:if="${image}" th:src="@{${image}}" alt="Profile Image" />
+    <img th:unless="${image}" th:src="@{/images/default.jpeg}" alt="Default Image" />
     <div class="card-body">
-        <h5 th:text="${username}">Chat Room Name</h5>
-        <img th:if="${image}" th:src="@{${image}}" />
-        <img th:unless="${image}" th:src="@{/images/default.jpeg}" />
+        <h5 th:text="${username}">Your Name</h5>
     </div>
+</div>
 
-    <div class="col-md-4" th:each="friend : ${friends}">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title" th:text="${friend.username}">Chat Room Name</h5>
-                <img th:if="${friend.imageUrl}" th:src="@{${friend.imageUrl}}" />
-                <img th:unless="${friend.imageUrl}" th:src="@{/images/default.jpeg}" />
-
-            </div>
+<div class="friends-list">
+    <div class="friend-card card" th:each="friend : ${friends}">
+        <img th:if="${friend.imageUrl}" th:src="@{${friend.imageUrl}}" alt="Friend Image" />
+        <img th:unless="${friend.imageUrl}" th:src="@{/images/default.jpeg}" alt="Default Friend Image" />
+        <div class="card-body">
+            <h5 class="card-title" th:text="${friend.username}">Friend Name</h5>
         </div>
     </div>
 </div>
+
 </body>
 </html>
