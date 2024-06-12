@@ -2,12 +2,12 @@ package com.sparta.webfluxchat.service;
 
 import com.sparta.webfluxchat.entity.Message;
 import com.sparta.webfluxchat.security.UserDetailsImpl;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
