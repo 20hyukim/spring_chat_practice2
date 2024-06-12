@@ -7,10 +7,10 @@ import com.sparta.webfluxchat.entity.User;
 import com.sparta.webfluxchat.repository.FriendRepository;
 import com.sparta.webfluxchat.repository.UserRepository;
 import com.sparta.webfluxchat.service.S3.S3Uploader;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class MyPageService {
     private final UserRepository userRepository;
     private final FriendRepository friendRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<FriendDto> getFriendList(Long id) {
         User user = findUserByIdAndCheckPresent(id, false);
 
@@ -41,10 +41,11 @@ public class MyPageService {
     }
 
     @Transactional
-    public void setImage(MultipartFile image, Long id) throws IOException {
+    public void setProfile(MultipartFile image, String username, Long id) throws IOException {
         String storedFileName = s3Uploader.upload(image, "image");
         User user = findUserByIdAndCheckPresent(id, false);
         user.setImageUrl(storedFileName);
+        user.setUsername(username);
         userRepository.save(user);
     }
 
