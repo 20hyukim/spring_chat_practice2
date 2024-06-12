@@ -1,6 +1,7 @@
 package com.sparta.webfluxchat.service;
 
 import com.sparta.webfluxchat.dto.FriendDto;
+import com.sparta.webfluxchat.entity.ErrorEnum;
 import com.sparta.webfluxchat.entity.Friend;
 import com.sparta.webfluxchat.entity.User;
 import com.sparta.webfluxchat.repository.FriendRepository;
@@ -31,7 +32,6 @@ public class MyPageService {
         User user = userRepository.findById(id).orElseThrow();
 
         List<FriendDto> friendDtos = new ArrayList<>();
-        log.info("getFriendList method started");
         for (Friend friend : user.getFriends()) {
             FriendDto friendDto = new FriendDto(friend.getFriendId(), friend.getUser().getId());
             friendDtos.add(friendDto);
@@ -45,40 +45,42 @@ public class MyPageService {
     @Transactional
     public void setImage(MultipartFile image, Long id) throws IOException {
         String storedFileName = s3Uploader.upload(image, "image");
-        User user = userRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(ErrorEnum.NOT_FOUND_USER.getMessage()));
         user.setImageUrl(storedFileName);
         userRepository.save(user);
     }
 
     @Transactional
     public void setFriend(Long friendId, User user) {
-        user = userRepository.findById(user.getId()).orElseThrow(); // 사용자 정보 불러오기
+        user = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException(ErrorEnum.NOT_FOUND_USER.getMessage())); // 사용자 정보 불러오기
 
         Optional<User> userFriendOptional = userRepository.findById(friendId); // 친구 정보 불러오기
-        User userFriend;
-        if (userFriendOptional.isPresent()) {
-            userFriend = userFriendOptional.get();
-        } else {
-            throw new IllegalArgumentException("유효하지 않은 친구 번호 입니다.");
-        }
-
-        if (Objects.equals(user.getId(), friendId)) {
-            throw new IllegalArgumentException("자기 자신을 친구 추가 할 수 없습니다.");
-        }
-
-        for (Friend friend : user.getFriends()) {
-            if (Objects.equals(friend.getFriendId(), friendId)) {
-                throw new IllegalArgumentException("이미 친구 추가 완료된 아이디 입니다.");
-            }
-        }
+        User userFriend = checkFriendId(friendId, user, userFriendOptional);
 
         Friend newFriend = new Friend(user, userFriend.getId());
-
         user.addFriend(newFriend);
 
         friendRepository.save(newFriend);
         userRepository.save(user);
+    }
 
+    private static User checkFriendId(Long friendId, User user, Optional<User> userFriendOptional) {
+        User userFriend;
+        if (userFriendOptional.isPresent()) {
+            userFriend = userFriendOptional.get();
+        } else {
+            throw new IllegalArgumentException(ErrorEnum.NOT_FOUND_FRIEND.getMessage());
+        }
 
+        if (Objects.equals(user.getId(), friendId)) {
+            throw new IllegalArgumentException(ErrorEnum.BAD_OWN_REQUEST.getMessage());
+        }
+
+        for (Friend friend : user.getFriends()) {
+            if (Objects.equals(friend.getFriendId(), friendId)) {
+                throw new IllegalArgumentException(ErrorEnum.COMPLETED_REQUEST.getMessage());
+            }
+        }
+        return userFriend;
     }
 }
