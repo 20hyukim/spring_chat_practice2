@@ -52,9 +52,6 @@ public class User {
     }
 
     public void addFriend(Friend friend) {
-        if (this.friends == null) {
-            this.friends = new ArrayList<>();
-        }
         this.friends.add(friend);
         friend.setUser(this);
     }
