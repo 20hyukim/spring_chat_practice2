@@ -6,11 +6,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FriendDto {
-    private Long userId;
-    private Long friendId;
+    private String username;
+    private String imageUrl;
 
-    public FriendDto(Long friendId, Long myId) {
-        this.userId = myId;
-        this.friendId = friendId;
+    public FriendDto(String username, String imageUrl) {
+        this.username = username;
+        this.imageUrl = imageUrl;
     }
 }
