@@ -31,14 +31,14 @@ public class MyPageController {
         return "page";
     }
 
-    @PatchMapping("/user/image")
-    public String myImage(@RequestParam(value="image") MultipartFile image, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        myPageService.setImage(image, userDetails.getUser().getId());
+    @PatchMapping("/user/profile")
+    public String setMyProfile(@RequestParam(value="image") MultipartFile image, @RequestParam String username, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        myPageService.setProfile(image, username, userDetails.getUser().getId());
         return "redirect:/page";
     }
 
     @PostMapping("/user/friend")
-    public String myFriend(@RequestParam Long friendId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String setFriend(@RequestParam Long friendId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         myPageService.setFriend(friendId, userDetails.getUser());
         return "redirect:/page";
     }
