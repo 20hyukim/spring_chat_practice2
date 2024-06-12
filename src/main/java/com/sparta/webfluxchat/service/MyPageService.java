@@ -33,12 +33,22 @@ public class MyPageService {
 
         List<FriendDto> friendDtos = new ArrayList<>();
         for (Friend friend : user.getFriends()) {
-            FriendDto friendDto = new FriendDto(friend.getFriendId(), friend.getUser().getId());
+
+            User friendUser = findUserByIdAndCheckPresent(friend);
+
+            FriendDto friendDto = new FriendDto(friendUser.getUsername(), friendUser.getImageUrl());
             friendDtos.add(friendDto);
-            log.info("friendDto {}", friendDto.getFriendId());
         }
         return friendDtos;
 
+    }
+
+    private User findUserByIdAndCheckPresent(Friend friend) {
+        Optional<User> friendUserOptional= userRepository.findById(friend.getFriendId());
+        if (friendUserOptional.isPresent()) {
+            return friendUserOptional.get();
+        }
+        throw new IllegalArgumentException(ErrorEnum.NOT_FOUND_FRIEND.getMessage());
     }
 
 
