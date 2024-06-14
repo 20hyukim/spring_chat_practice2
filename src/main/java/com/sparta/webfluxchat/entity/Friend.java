@@ -23,6 +23,8 @@ public class Friend {
     @JoinColumn(name="user_id")
     private User user;
 
+    @Column
+    private String friendName;
 
     public Friend(User user, Long friendId) {
         this.user= user;
