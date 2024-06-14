@@ -1,6 +1,7 @@
 package com.sparta.webfluxchat.service;
 
 import com.sparta.webfluxchat.dto.FriendDto;
+import com.sparta.webfluxchat.dto.PageFriendRequestDto;
 import com.sparta.webfluxchat.dto.PageMyRequestDto;
 import com.sparta.webfluxchat.entity.ErrorEnum;
 import com.sparta.webfluxchat.entity.Friend;
@@ -36,7 +37,7 @@ public class MyPageService {
         for (Friend friend : user.getFriends()) {
             User friendUser = findUserByIdAndCheckPresent(friend.getFriendId(), true);
             String friendName = getSettedName(friend, friendUser);
-            FriendDto friendDto = new FriendDto(friendUser.getId(), friendName, friendUser.getImageUrl());
+            FriendDto friendDto = new FriendDto(friendUser.getId(), friendName, friendUser.getName(), friendUser.getImageUrl());
             friendDtos.add(friendDto);
         }
         return friendDtos;
@@ -76,6 +77,16 @@ public class MyPageService {
         userRepository.save(user);
     }
 
+    @Transactional
+    public void setFriendProfile(PageFriendRequestDto pageFriendRequestDto, Long id) {
+        Friend friend = friendRepository.findByUserIdAndFriendId(id, pageFriendRequestDto.getFriendId());
+        if (friend == null){
+            throw  new IllegalArgumentException(ErrorEnum.NOT_FOUND_FRIEND.getMessage());
+        }
+        friend.setFriendName(pageFriendRequestDto.getFriendName());
+        friendRepository.save(friend);
+    }
+
 
     private User findUserByIdAndCheckPresent(Long id, boolean friend) {
         Optional<User> UserOptional= userRepository.findById(id);
@@ -100,4 +111,6 @@ public class MyPageService {
             }
         }
     }
+
+
 }
