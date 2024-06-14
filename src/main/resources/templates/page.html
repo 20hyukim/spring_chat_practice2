@@ -143,7 +143,7 @@
 
 <div class="friends-list">
     <div class="friend-card card" th:each="friend : ${friends}"
-         th:attr="data-friend-id=${friend.id}, data-friend-name=${friend.name}"
+         th:attr="data-friend-id=${friend.id}, data-friend-name=${friend.name}, data-original-friend-name=${friend.originalName}"
          onclick="openModal('friendModal', 'friendName', this)">
         <img th:if="${friend.imageUrl}" th:src="@{${friend.imageUrl}}" alt="Friend Image" />
         <img th:unless="${friend.imageUrl}" th:src="@{/images/default.jpeg}" alt="Default Friend Image" />
@@ -176,6 +176,8 @@
         <form action="/friend/profile" method="post">
             <label for="friendNameInput">이름 수정:</label>
             <input type="text" id="friendNameInput" name="friendName">
+            <label for="friendOriginalNameInput">원래 이름:</label>
+            <input type="text" id="friendOriginalNameInput" name="friendOriginalName" readonly>
             <input type="hidden" id="friendIdInput" name="friendId">
 
             <input type="submit" value="Submit">
@@ -187,13 +189,15 @@
     function openModal(modalId, nameFieldId, element) {
         document.getElementById(modalId).style.display = "block";
         if (element) {
-            let name, id;
+            let name, id, originalName;
             if (modalId === 'profileModal') {
                 name = document.getElementById(nameFieldId).textContent.trim();
             } else {
                 name = element.getAttribute('data-friend-name');
                 id = element.getAttribute('data-friend-id');
+                originalName = element.getAttribute('data-original-friend-name');
                 document.getElementById('friendIdInput').value = id;
+                document.getElementById('friendOriginalNameInput').value = originalName;
             }
             document.getElementById(nameFieldId + 'Input').value = name;
         }
