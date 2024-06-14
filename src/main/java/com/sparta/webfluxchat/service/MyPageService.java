@@ -1,6 +1,7 @@
 package com.sparta.webfluxchat.service;
 
 import com.sparta.webfluxchat.dto.FriendDto;
+import com.sparta.webfluxchat.dto.PageRequestDto;
 import com.sparta.webfluxchat.entity.ErrorEnum;
 import com.sparta.webfluxchat.entity.Friend;
 import com.sparta.webfluxchat.entity.User;
@@ -41,11 +42,15 @@ public class MyPageService {
     }
 
     @Transactional
-    public void setProfile(MultipartFile image, String name, Long id) throws IOException {
-        String storedFileName = s3Uploader.upload(image, "image");
+    public void setProfile(MultipartFile image, PageRequestDto pageRequestDto, Long id) throws IOException {
         User user = findUserByIdAndCheckPresent(id, false);
-        user.setImageUrl(storedFileName);
-        user.setName(name);
+        if (!image.isEmpty()) {
+            String storedFileName = s3Uploader.upload(image, "image");
+            user.setImageUrl(storedFileName);
+        }
+        if (!pageRequestDto.getName().isEmpty()) {
+            user.setName(pageRequestDto.getName());
+        }
         userRepository.save(user);
     }
 
