@@ -1,18 +1,18 @@
 package com.sparta.webfluxchat.controller.api;
 
 import com.sparta.webfluxchat.dto.FriendDto;
+import com.sparta.webfluxchat.dto.PageRequestDto;
 import com.sparta.webfluxchat.entity.User;
 import com.sparta.webfluxchat.security.UserDetailsImpl;
 import com.sparta.webfluxchat.service.MyPageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,10 +31,12 @@ public class MyPageController {
         return "page";
     }
 
-    @PatchMapping("/user/profile")
-    public String setMyProfile(@RequestParam(value="image") MultipartFile image, @RequestParam String name, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        myPageService.setProfile(image, name, userDetails.getUser().getId());
-        return "redirect:/page";
+    @PostMapping("/user/profile")
+    public String setMyProfile(@ModelAttribute PageRequestDto pageRequestDto,
+                               @RequestParam(value="image") MultipartFile image,
+                               @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        myPageService.setProfile(image, pageRequestDto, userDetails.getUser().getId());
+        return "redirect:/user/page";
     }
 
     @PostMapping("/user/friend")
