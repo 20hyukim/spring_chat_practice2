@@ -62,7 +62,7 @@
     <img th:if="${image}" th:src="@{${image}}" alt="Profile Image" />
     <img th:unless="${image}" th:src="@{/images/default.jpeg}" alt="Default Image" />
     <div class="card-body">
-        <h5 th:text="${username}">Your Name</h5>
+        <h5 th:text="${name}">Your Name</h5>
     </div>
 </div>
 
@@ -71,7 +71,7 @@
         <img th:if="${friend.imageUrl}" th:src="@{${friend.imageUrl}}" alt="Friend Image" />
         <img th:unless="${friend.imageUrl}" th:src="@{/images/default.jpeg}" alt="Default Friend Image" />
         <div class="card-body">
-            <h5 class="card-title" th:text="${friend.username}">Friend Name</h5>
+            <h5 class="card-title" th:text="${friend.name}">Friend Name</h5>
         </div>
     </div>
 </div>
