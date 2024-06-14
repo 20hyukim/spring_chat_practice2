@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PageRequestDto {
+public class PageMyRequestDto {
     private String name;
 }
