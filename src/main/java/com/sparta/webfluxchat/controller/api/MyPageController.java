@@ -24,7 +24,7 @@ public class MyPageController {
     private final MyPageService myPageService;
     @GetMapping("/user/page")
     public String myPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        model.addAttribute("username", userDetails.getUser().getUsername());
+        model.addAttribute("name", userDetails.getUser().getName());
         model.addAttribute("image", userDetails.getUser().getImageUrl());
         List<FriendDto> friendList = myPageService.getFriendList(userDetails.getUser().getId());
         model.addAttribute("friends", friendList);
@@ -32,8 +32,8 @@ public class MyPageController {
     }
 
     @PatchMapping("/user/profile")
-    public String setMyProfile(@RequestParam(value="image") MultipartFile image, @RequestParam String username, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        myPageService.setProfile(image, username, userDetails.getUser().getId());
+    public String setMyProfile(@RequestParam(value="image") MultipartFile image, @RequestParam String name, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        myPageService.setProfile(image, name, userDetails.getUser().getId());
         return "redirect:/page";
     }
 
