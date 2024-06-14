@@ -35,10 +35,18 @@ public class MyPageService {
         List<FriendDto> friendDtos = new ArrayList<>();
         for (Friend friend : user.getFriends()) {
             User friendUser = findUserByIdAndCheckPresent(friend.getFriendId(), true);
-            FriendDto friendDto = new FriendDto(friendUser.getId(), friendUser.getName(), friendUser.getImageUrl());
+            String friendName = getSettedName(friend, friendUser);
+            FriendDto friendDto = new FriendDto(friendUser.getId(), friendName, friendUser.getImageUrl());
             friendDtos.add(friendDto);
         }
         return friendDtos;
+    }
+
+    private String getSettedName(Friend friend, User friendUser) {
+        if (friend.getFriendName()==null) {
+            return friendUser.getName();
+        }
+        return friend.getFriendName();
     }
 
     @Transactional
