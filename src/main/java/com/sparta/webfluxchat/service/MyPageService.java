@@ -34,18 +34,18 @@ public class MyPageService {
         List<FriendDto> friendDtos = new ArrayList<>();
         for (Friend friend : user.getFriends()) {
             User friendUser = findUserByIdAndCheckPresent(friend.getFriendId(), true);
-            FriendDto friendDto = new FriendDto(friendUser.getUsername(), friendUser.getImageUrl());
+            FriendDto friendDto = new FriendDto(friendUser.getName(), friendUser.getImageUrl());
             friendDtos.add(friendDto);
         }
         return friendDtos;
     }
 
     @Transactional
-    public void setProfile(MultipartFile image, String username, Long id) throws IOException {
+    public void setProfile(MultipartFile image, String name, Long id) throws IOException {
         String storedFileName = s3Uploader.upload(image, "image");
         User user = findUserByIdAndCheckPresent(id, false);
         user.setImageUrl(storedFileName);
-        user.setUsername(username);
+        user.setName(name);
         userRepository.save(user);
     }
 
