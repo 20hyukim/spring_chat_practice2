@@ -1,6 +1,7 @@
 package com.sparta.webfluxchat.controller.api;
 
 import com.sparta.webfluxchat.dto.FriendDto;
+import com.sparta.webfluxchat.dto.PageFriendRequestDto;
 import com.sparta.webfluxchat.dto.PageMyRequestDto;
 import com.sparta.webfluxchat.security.UserDetailsImpl;
 import com.sparta.webfluxchat.service.MyPageService;
@@ -33,6 +34,13 @@ public class MyPageController {
                                @RequestParam(value="image") MultipartFile image,
                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         myPageService.setProfile(image, pageMyRequestDto, userDetails.getUser().getId());
+        return "redirect:/user/page";
+    }
+
+    @PostMapping("/friend/profile")
+    public String setFriendProfile(@ModelAttribute PageFriendRequestDto pageFriendRequestDto,
+                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
+        myPageService.setFriendProfile(pageFriendRequestDto, userDetails.getUser().getId());
         return "redirect:/user/page";
     }
 
