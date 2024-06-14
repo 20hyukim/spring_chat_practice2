@@ -1,7 +1,7 @@
 package com.sparta.webfluxchat.service;
 
 import com.sparta.webfluxchat.dto.FriendDto;
-import com.sparta.webfluxchat.dto.PageRequestDto;
+import com.sparta.webfluxchat.dto.PageMyRequestDto;
 import com.sparta.webfluxchat.entity.ErrorEnum;
 import com.sparta.webfluxchat.entity.Friend;
 import com.sparta.webfluxchat.entity.User;
@@ -35,21 +35,21 @@ public class MyPageService {
         List<FriendDto> friendDtos = new ArrayList<>();
         for (Friend friend : user.getFriends()) {
             User friendUser = findUserByIdAndCheckPresent(friend.getFriendId(), true);
-            FriendDto friendDto = new FriendDto(friendUser.getName(), friendUser.getImageUrl());
+            FriendDto friendDto = new FriendDto(friendUser.getId(), friendUser.getName(), friendUser.getImageUrl());
             friendDtos.add(friendDto);
         }
         return friendDtos;
     }
 
     @Transactional
-    public void setProfile(MultipartFile image, PageRequestDto pageRequestDto, Long id) throws IOException {
+    public void setProfile(MultipartFile image, PageMyRequestDto pageMyRequestDto, Long id) throws IOException {
         User user = findUserByIdAndCheckPresent(id, false);
         if (!image.isEmpty()) {
             String storedFileName = s3Uploader.upload(image, "image");
             user.setImageUrl(storedFileName);
         }
-        if (!pageRequestDto.getName().isEmpty()) {
-            user.setName(pageRequestDto.getName());
+        if (!pageMyRequestDto.getName().isEmpty()) {
+            user.setName(pageMyRequestDto.getName());
         }
         userRepository.save(user);
     }
