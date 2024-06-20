@@ -3,6 +3,7 @@ package com.sparta.webfluxchat.controller.api;
 import com.sparta.webfluxchat.dto.FriendDto;
 import com.sparta.webfluxchat.dto.PageFriendRequestDto;
 import com.sparta.webfluxchat.dto.PageMyRequestDto;
+import com.sparta.webfluxchat.entity.Friend;
 import com.sparta.webfluxchat.security.UserDetailsImpl;
 import com.sparta.webfluxchat.service.MyPageService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -20,6 +22,7 @@ import java.util.List;
 public class MyPageController {
 
     private final MyPageService myPageService;
+
     @GetMapping("/user/page")
     public String myPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){
         model.addAttribute("name", userDetails.getUser().getName());
