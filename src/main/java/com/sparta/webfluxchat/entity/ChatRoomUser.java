@@ -2,11 +2,13 @@ package com.sparta.webfluxchat.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class ChatRoomUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +23,8 @@ public class ChatRoomUser {
     private User user;
 
 
+    public ChatRoomUser(User user, ChatRoom chatRoom) {
+        this.chatRoom = chatRoom;
+        this.user = user;
+    }
 }
