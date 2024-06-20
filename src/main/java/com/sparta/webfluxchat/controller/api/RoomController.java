@@ -34,10 +34,4 @@ public class RoomController {
         return "index";
     }
 
-    @GetMapping("/chatroom/friend")
-    public String createChat() {
-        chatRoomService.createChat();
-        return "index";
-    }
-
 }
