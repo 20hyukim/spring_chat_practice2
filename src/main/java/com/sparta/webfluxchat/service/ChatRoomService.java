@@ -66,36 +66,6 @@ public class ChatRoomService {
         return chatRooms;
     }
 
-    public void createChat() {
-        Optional<User> userOptional1 = userRepository.findById(1L);
-        Optional<User> userOptional2 = userRepository.findById(2L);
-        Optional<User> userOptional3 = userRepository.findById(3L);
-
-        User user1 = userOptional1.get();
-        User user2 = userOptional2.get();
-        User user3 = userOptional3.get();
-
-
-        ChatRoom chatRoom = new ChatRoom("new");
-        chatRoomRepository.save(chatRoom);
-
-        ChatRoomUser chatRoomUser = new ChatRoomUser();
-        chatRoomUser.setChatRoom(chatRoom);
-        chatRoomUser.setUser(user1);
-        chatRoomUserRepository.save(chatRoomUser);
-
-        ChatRoomUser chatRoomUser1 = new ChatRoomUser();
-        chatRoomUser1.setChatRoom(chatRoom);
-        chatRoomUser1.setUser(user2);
-        chatRoomUserRepository.save(chatRoomUser1);
-
-
-        ChatRoomUser chatRoomUser2 = new ChatRoomUser();
-        chatRoomUser2.setChatRoom(chatRoom);
-        chatRoomUser2.setUser(user3);
-        chatRoomUserRepository.save(chatRoomUser2);
-
-    }
 
     private User findUserByIdAndCheckPresent(Long id) {
         Optional<User> UserOptional= userRepository.findById(id);
