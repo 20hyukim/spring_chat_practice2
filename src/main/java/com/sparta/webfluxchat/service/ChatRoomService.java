@@ -1,7 +1,9 @@
 package com.sparta.webfluxchat.service;
 
+import com.sparta.webfluxchat.dto.FriendIdsDto;
 import com.sparta.webfluxchat.entity.ChatRoom;
 import com.sparta.webfluxchat.entity.ChatRoomUser;
+import com.sparta.webfluxchat.entity.ErrorEnum;
 import com.sparta.webfluxchat.entity.User;
 import com.sparta.webfluxchat.repository.ChatRoomRepository;
 import com.sparta.webfluxchat.repository.ChatRoomUserRepository;
@@ -29,13 +31,21 @@ public class ChatRoomService {
     private static final Logger logger = LoggerFactory.getLogger(ChatRoomService.class);
 
     @Transactional
-    public ResponseEntity<String> createChatRoom(String chatName) {
-        Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByName(chatName);
-        if (existingChatRoom.isPresent()) {
-            throw new IllegalArgumentException("Error: 중복된 채팅방 이름이 존재합니다.");
+    public ResponseEntity<String> createChatRoom(String chatName, Long userId, FriendIdsDto friendIdsDto) {
+
+        if (friendIdsDto.getIds().isEmpty()) {
+            return ResponseEntity.ok("친구가 선택되지 않았습니다.");
         }
+
         ChatRoom chatRoom = new ChatRoom(chatName);
         chatRoomRepository.save(chatRoom);
+
+        friendIdsDto.getIds().add(userId);
+        for (Long id : friendIdsDto.getIds()) {
+            User user = findUserByIdAndCheckPresent(id);
+            ChatRoomUser chatRoomUser = new ChatRoomUser(user, chatRoom);
+            chatRoomUserRepository.save(chatRoomUser);
+        }
 
         return ResponseEntity.ok("성공적으로 채팅방이 생성되었습니다.");
     }
@@ -85,5 +95,13 @@ public class ChatRoomService {
         chatRoomUser2.setUser(user3);
         chatRoomUserRepository.save(chatRoomUser2);
 
+    }
+
+    private User findUserByIdAndCheckPresent(Long id) {
+        Optional<User> UserOptional= userRepository.findById(id);
+        if (UserOptional.isPresent()) {
+            return UserOptional.get();
+        }
+        throw new IllegalArgumentException(ErrorEnum.NOT_FOUND_USER.getMessage());
     }
 }
