@@ -49,7 +49,7 @@ public class MyPageController {
     @PostMapping("/user/friend")
     public String setFriend(@RequestParam Long friendId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         myPageService.setFriend(friendId, userDetails.getUser());
-        return "redirect:/page";
+        return "redirect:/user/page";
     }
 
 }
