@@ -10,6 +10,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - uses: mirromutth/mysql-action@v1.1
+        with:
+          host port: 3306
+          container port: 3306
+          mysql database: 'webflux'
+          mysql root password: ${{ secrets.DB_PASSWORD }}
       - uses: actions/checkout@v2
       
       - name: Set up JDK 17
