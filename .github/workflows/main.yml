@@ -44,11 +44,11 @@ jobs:
           aws-region: ap-northeast-2
       
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://cicd-potato-bucket/chat_proj/$GITHUB_SHA.zip
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://cicd-potato-bucket/chat/$GITHUB_SHA.zip
 
       - name: Code Deploy To EC2 instance
         run: aws deploy create-deployment 
                 --application-name chat_codedeploy 
                 --deployment-config-name CodeDeployDefault.AllAtOnce
                 --deployment-group-name codedeploy_group
-                --s3-location bucket=cicd-potato-bucket,bundleType=zip,key=chat_proj/$GITHUB_SHA.zip
+                --s3-location bucket=cicd-potato-bucket,bundleType=zip,key=chat/$GITHUB_SHA.zip
