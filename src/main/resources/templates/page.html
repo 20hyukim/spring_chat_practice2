@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile Page</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .profile-card {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #add8e6;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+        }
+        .friend-card {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #d8bfd8;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .profile-card img, .friend-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+        .card-body {
+            text-align: left;
+        }
+        .card-body h5 {
+            margin: 0;
+        }
+        .return-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-decoration: none;
+            color: #555555;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .return-link:hover {
+            text-decoration: underline;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
+        }
+        .form-container {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: slide-down 0.4s ease-out;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        @keyframes slide-down {
+            from {
+                transform: translateY(-30%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .form-container label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .form-container input[type="text"],
+        .form-container input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .form-container input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .form-container input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<a href="/" class="return-link">채팅방으로 돌아가기</a>
+
+<div class="profile-card card" onclick="openModal('profileModal', 'profileName', this)">
+    <img th:if="${image}" th:src="@{${image}}" alt="Profile Image" />
+    <img th:unless="${image}" th:src="@{/images/default.jpeg}" alt="Default Image" />
+    <div class="card-body">
+        <h5 id="profileName" th:text="${name}">Your Name</h5>
+    </div>
+</div>
+
+<div class="friends-list">
+    <div class="friend-card card" th:each="friend : ${friends}"
+         th:attr="data-friend-id=${friend.id}, data-friend-name=${friend.name}, data-original-friend-name=${friend.originalName}"
+         onclick="openModal('friendModal', 'friendName', this)">
+        <img th:if="${friend.imageUrl}" th:src="@{${friend.imageUrl}}" alt="Friend Image" />
+        <img th:unless="${friend.imageUrl}" th:src="@{/images/default.jpeg}" alt="Default Friend Image" />
+        <div class="card-body">
+            <h5 class="card-title" th:text="${friend.name}">Friend Name</h5>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Modal -->
+<div id="profileModal" class="modal">
+    <div class="form-container">
+        <span class="close" onclick="closeModal('profileModal')">&times;</span>
+        <form action="/user/profile" method="post" enctype="multipart/form-data">
+            <label for="profileNameInput">이름 수정:</label>
+            <input type="text" id="profileNameInput" name="name">
+
+            <label for="image">프로필 사진 수정:</label>
+            <input type="file" id="image" name="image">
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</div>
+
+<!-- Friend Modal -->
+<div id="friendModal" class="modal">
+    <div class="form-container">
+        <span class="close" onclick="closeModal('friendModal')">&times;</span>
+        <form action="/friend/profile" method="post">
+            <label for="friendNameInput">이름 수정:</label>
+            <input type="text" id="friendNameInput" name="friendName">
+            <label for="friendOriginalNameInput">원래 이름:</label>
+            <input type="text" id="friendOriginalNameInput" name="friendOriginalName" readonly>
+            <input type="hidden" id="friendIdInput" name="friendId">
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</div>
+
+<script>
+    function openModal(modalId, nameFieldId, element) {
+        document.getElementById(modalId).style.display = "block";
+        if (element) {
+            let name, id, originalName;
+            if (modalId === 'profileModal') {
+                name = document.getElementById(nameFieldId).textContent.trim();
+            } else {
+                name = element.getAttribute('data-friend-name');
+                id = element.getAttribute('data-friend-id');
+                originalName = element.getAttribute('data-original-friend-name');
+                document.getElementById('friendIdInput').value = id;
+                document.getElementById('friendOriginalNameInput').value = originalName;
+            }
+            document.getElementById(nameFieldId + 'Input').value = name;
+        }
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+    }
+</script>
+
+</body>
+</html>
