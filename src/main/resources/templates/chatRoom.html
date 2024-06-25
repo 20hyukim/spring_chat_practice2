@@ -1,15 +1,69 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Chat Rooms</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
     <style>
+        body {
+            background-color: #f8bbd0; /* Light pink background */
+            font-family: Arial, sans-serif;
+            color: #333333; /* Dark grey text for contrast */
+        }
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff; /* White card background */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+        }
         .card {
-            margin: 10px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fce4ec; /* Light pink card background */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card-body {
+            text-align: left;
+        }
+        .card-title {
+            margin: 0;
+            color: #333333; /* Dark grey text */
+        }
+        .btn-primary {
+            background-color: #ec407a; /* Pink button */
+            border-color: #ec407a;
+            color: #ffffff; /* White text */
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+        }
+        .btn-primary:hover {
+            background-color: #d81b60; /* Darker pink button */
         }
         .hidden {
             display: none;
+        }
+        h1 {
+            text-align: center;
+            color: #333333; /* Dark grey text */
+        }
+        .table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        .table thead th {
+            background-color: #f48fb1; /* Pink header */
+            color: #ffffff; /* White text */
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: #fce4ec; /* Light pink row */
+        }
+        .table tbody tr:nth-child(odd) {
+            background-color: #f8bbd0; /* Slightly darker pink row */
         }
     </style>
 </head>
@@ -31,7 +85,7 @@
         </div>
     </div>
 </div>
-<div>
+<div class="container">
     <button id="connect" class="btn btn-primary" type="submit">Connect</button>
     <button id="disconnect" class="btn btn-primary" type="submit">Disconnect</button>
     <br>
@@ -50,7 +104,6 @@
             </table>
         </div>
     </div>
-
 </div>
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
