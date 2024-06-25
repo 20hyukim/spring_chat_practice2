@@ -132,6 +132,7 @@
 
 <a href="/" class="return-link">채팅방으로 돌아가기</a>
 <a href="/user/chat" class="return-link">채팅방 만들기</a>
+<a href="javascript:void(0);" class="return-link" onclick="openModal('addFriendModal')">친구 추가하기</a>
 
 <div class="profile-card card" onclick="openModal('profileModal', 'profileName', this)">
     <img th:if="${image}" th:src="@{${image}}" alt="Profile Image" />
@@ -185,6 +186,19 @@
     </div>
 </div>
 
+<!-- Add Friend Modal -->
+<div id="addFriendModal" class="modal">
+    <div class="form-container">
+        <span class="close" onclick="closeModal('addFriendModal')">&times;</span>
+        <form action="/user/friend" method="post">
+            <label for="friendIdInput">친구 ID:</label>
+            <input type="text" id="friendIdInput" name="friendId" required>
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</div>
+
 <script>
     function openModal(modalId, nameFieldId, element) {
         document.getElementById(modalId).style.display = "block";
@@ -192,7 +206,7 @@
             let name, id, originalName;
             if (modalId === 'profileModal') {
                 name = document.getElementById(nameFieldId).textContent.trim();
-            } else {
+            } else if (modalId === 'friendModal') {
                 name = element.getAttribute('data-friend-name');
                 id = element.getAttribute('data-friend-id');
                 originalName = element.getAttribute('data-original-friend-name');
