@@ -44,9 +44,8 @@
             margin: 0;
         }
         .return-link {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+            display: block;
+            margin-bottom: 10px; /* Added margin to separate the links */
             text-decoration: none;
             color: #555555;
             font-size: 16px;
@@ -132,6 +131,7 @@
 <body>
 
 <a href="/" class="return-link">채팅방으로 돌아가기</a>
+<a href="/user/chat" class="return-link">채팅방 만들기</a>
 
 <div class="profile-card card" onclick="openModal('profileModal', 'profileName', this)">
     <img th:if="${image}" th:src="@{${image}}" alt="Profile Image" />
