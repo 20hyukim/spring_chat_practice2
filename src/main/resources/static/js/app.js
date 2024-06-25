@@ -1,5 +1,5 @@
 const stompClient = new StompJs.Client({
-    brokerURL: 'ws://localhost:8080/greeting-websocket'
+    brokerURL: 'ws://ec2-13-125-52-207.ap-northeast-2.compute.amazonaws.com/greeting-websocket'
 });
 
 stompClient.onConnect = (frame) => {
