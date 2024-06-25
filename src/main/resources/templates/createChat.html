@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" content="CSRF_TOKEN_VALUE">
+    <title>Profile Page</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .profile-card {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #add8e6;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+        }
+        .friend-card {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #d8bfd8;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .friend-card.clicked {
+            background-color: #808080;
+        }
+        .profile-card img, .friend-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+        .card-body {
+            text-align: left;
+        }
+        .card-body h5 {
+            margin: 0;
+        }
+        .return-link {
+            display: block;
+            margin-bottom: 10px; /* Added margin to separate the links */
+            text-decoration: none;
+            color: #555555;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .return-link:hover {
+            text-decoration: underline;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
+        }
+        .form-container {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: slide-down 0.4s ease-out;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        @keyframes slide-down {
+            from {
+                transform: translateY(-30%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .form-container label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .form-container input[type="text"],
+        .form-container input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .form-container input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .form-container input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .create-chat-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+        }
+        .create-chat-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<a href="/" class="return-link">채팅방으로 돌아가기</a>
+
+<div class="friends-list">
+    <div class="friend-card card" th:each="friend : ${friends}"
+         th:attr="data-friend-id=${friend.id}"
+         onclick="handleCardClick(this)">
+        <img th:if="${friend.imageUrl}" th:src="@{${friend.imageUrl}}" alt="Friend Image" />
+        <img th:unless="${friend.imageUrl}" th:src="@{/images/default.jpeg}" alt="Default Friend Image" />
+        <div class="card-body">
+            <h5 class="card-title" th:text="${friend.name}">Friend Name</h5>
+        </div>
+    </div>
+</div>
+
+<button class="create-chat-btn" onclick="openChatModal()">Create Chat Room</button>
+
+<!-- Chat Room Modal -->
+<div id="chatModal" class="modal">
+    <div class="form-container">
+        <span class="close" onclick="closeModal('chatModal')">&times;</span>
+        <form id="chatRoomForm">
+            <label for="chatNameInput">채팅방 이름:</label>
+            <input type="text" id="chatNameInput" name="chatName" required>
+            <input type="hidden" id="selectedFriends" name="selectedFriends">
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</div>
+
+<script>
+    let selectedFriendIds = [];
+
+    function handleCardClick(element) {
+        const friendId = element.getAttribute('data-friend-id');
+        if (selectedFriendIds.includes(friendId)) {
+            element.classList.remove('clicked');
+            selectedFriendIds = selectedFriendIds.filter(id => id !== friendId);
+        } else {
+            element.classList.add('clicked');
+            selectedFriendIds.push(friendId);
+        }
+    }
+
+    function openChatModal() {
+        if (selectedFriendIds.length === 0) {
+            alert('Please select at least one friend to create a chat room.');
+            return;
+        }
+        document.getElementById('chatModal').style.display = 'block';
+        document.getElementById('selectedFriends').value = JSON.stringify(selectedFriendIds);
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    document.getElementById('chatRoomForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const chatName = document.getElementById('chatNameInput').value;
+        const friendIds = JSON.parse(document.getElementById('selectedFriends').value);
+
+        // CSRF 토큰 가져오기
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+
+        fetch('/chatroom?chatName=' + encodeURIComponent(chatName), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ ids: friendIds }) // 수정된 부분
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Chat room created:', data);
+                window.location.href = `/chatroom/${data}`;
+            })
+            .catch(error => console.error('Error creating chat room:', error));
+    });
+</script>
+
+</body>
+</html>
