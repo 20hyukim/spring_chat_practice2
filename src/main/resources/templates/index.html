@@ -4,14 +4,60 @@
     <meta charset="UTF-8">
     <title>Chat Application</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #chat-container {
+            width: 60%;
+            max-width: 800px;
+            height: 600px; /* 고정 높이 설정 */
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
         #messages {
-            border: 1px solid #000;
-            height: 300px;
-            overflow-y: scroll;
-            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #fafafa;
+            height: calc(100% - 80px); /* 고정 높이 계산 */
         }
         #input {
-            margin-top: 10px;
+            display: flex;
+            padding: 20px;
+            background-color: #fff;
+            height: 80px; /* 고정 높이 설정 */
+        }
+        #message {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        #sendButton {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #sendButton:hover {
+            background-color: #0056b3;
         }
         .message-container {
             display: flex;
@@ -34,11 +80,13 @@
         }
         .message.left {
             text-align: left;
-            background-color: #f1f1f1;
+            background-color: #e1f7d5;
+            color: #000;
         }
         .message.right {
             text-align: right;
-            background-color: #d1ffd1;
+            background-color: #007bff;
+            color: #fff;
         }
         .message-userId {
             font-size: 0.8em;
@@ -50,10 +98,12 @@
     </style>
 </head>
 <body>
-<div id="messages"></div>
-<div id="input">
-    <input type="text" id="message" placeholder="Enter your message">
-    <button onclick="sendMessage()">Send</button>
+<div id="chat-container">
+    <div id="messages"></div>
+    <div id="input">
+        <input type="text" id="message" placeholder="Enter your message" onkeypress="handleKeyPress(event)">
+        <button id="sendButton" onclick="sendMessage()">Send</button>
+    </div>
 </div>
 <div id="roomNumber" th:text="${roomNumber}" class="hidden"></div>
 <div id="owner" th:text="${owner}" class="hidden"></div>
@@ -103,9 +153,16 @@
 
     function sendMessage() {
         const message = document.getElementById('message').value;
+        if (message.trim() === '') return; // Prevent sending empty messages
         const roomnumber = document.getElementById('roomNumber').textContent;
         fetch(`/send?message=${encodeURIComponent(message)}&roomnumber=${encodeURIComponent(roomnumber)}`);
         document.getElementById('message').value = '';
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
     }
 </script>
 </body>
