@@ -44,10 +44,13 @@ function disconnect() {
 
 function sendName() {
     var nameValue = $("#name").text();
+    var message = $("#message").val();
+
+    document.getElementById('message').value = '';
 
     stompClient.publish({
         destination: "/app/hello",
-        body: JSON.stringify({'name': nameValue})
+        body: JSON.stringify({'name': nameValue, 'message': message})
     });
 }
 
