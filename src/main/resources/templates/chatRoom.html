@@ -86,8 +86,8 @@
     </div>
 </div>
 <div class="container">
-    <button id="connect" class="btn btn-primary" type="submit">Connect</button>
-    <button id="disconnect" class="btn btn-primary" type="submit">Disconnect</button>
+    <!--<button id="connect" class="btn btn-primary" type="submit">Connect</button>
+    <button id="disconnect" class="btn btn-primary" type="submit">Disconnect</button> -->
     <br>
     <label for="message">메시지 </label><input type="text" id="message">
     <button id="send" class="btn btn-primary" type="submit">보내기</button>
@@ -112,6 +112,7 @@
 <script src="/js/app.js"></script>
 <script>
     $(document).ready(function() {
+        connect();
         $('#message').keypress(function(event) {
             if (event.keyCode === 13) {
                 event.preventDefault();
