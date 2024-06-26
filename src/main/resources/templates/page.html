@@ -133,7 +133,7 @@
 <a href="/" class="return-link">채팅방으로 돌아가기</a>
 <a href="/user/chat" class="return-link">채팅방 만들기</a>
 <a href="javascript:void(0);" class="return-link" onclick="openModal('addFriendModal')">친구 추가하기</a>
-
+<p>내 아이디: <span th:text="${userId}"></span></p>
 <div class="profile-card card" onclick="openModal('profileModal', 'profileName', this)">
     <img th:if="${image}" th:src="@{${image}}" alt="Profile Image" />
     <img th:unless="${image}" th:src="@{/images/default.jpeg}" alt="Default Image" />
