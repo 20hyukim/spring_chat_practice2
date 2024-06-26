@@ -179,7 +179,7 @@
             <input type="text" id="friendNameInput" name="friendName">
             <label for="friendOriginalNameInput">원래 이름:</label>
             <input type="text" id="friendOriginalNameInput" name="friendOriginalName" readonly>
-            <input type="hidden" name="friendId">
+            <input type="hidden" id="friendIdHiddenInput" name="friendId">
 
             <input type="submit" value="Submit">
         </form>
@@ -210,7 +210,7 @@
                 name = element.getAttribute('data-friend-name');
                 id = element.getAttribute('data-friend-id');
                 originalName = element.getAttribute('data-original-friend-name');
-                document.getElementById('friendIdInput').value = id;
+                document.getElementById('friendIdHiddenInput').value = id;
                 document.getElementById('friendOriginalNameInput').value = originalName;
             }
             document.getElementById(nameFieldId + 'Input').value = name;
