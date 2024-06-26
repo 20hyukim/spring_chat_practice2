@@ -25,6 +25,7 @@ public class MyPageController {
 
     @GetMapping("/user/page")
     public String myPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        model.addAttribute("userId", userDetails.getUser().getId());
         model.addAttribute("name", userDetails.getUser().getName());
         model.addAttribute("image", userDetails.getUser().getImageUrl());
         List<FriendDto> friendList = myPageService.getFriendList(userDetails.getUser().getId());
