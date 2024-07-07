@@ -1,5 +1,6 @@
 package com.sparta.webfluxchat.controller.api;
 
+import com.sparta.webfluxchat.dto.FriendDto;
 import com.sparta.webfluxchat.entity.ChatRoom;
 import com.sparta.webfluxchat.security.UserDetailsImpl;
 import com.sparta.webfluxchat.service.ChatRoomService;
@@ -31,6 +32,8 @@ public class RoomController {
     public String chatPage(Model model, @PathVariable Long roomnumber, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         model.addAttribute("roomNumber", roomnumber);
         model.addAttribute("owner", userDetails.getUser().getId());
+        //List<FriendDto> friendDtos = chatRoomService.findAttendants(roomnumber, userDetails.getUser().getId());
+        //model.addAttribute("attendants", friendDtos);
         return "index";
     }
 
