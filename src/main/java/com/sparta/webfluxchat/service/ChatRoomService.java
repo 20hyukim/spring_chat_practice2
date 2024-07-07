@@ -1,12 +1,11 @@
 package com.sparta.webfluxchat.service;
 
+import com.sparta.webfluxchat.dto.FriendDto;
 import com.sparta.webfluxchat.dto.FriendIdsDto;
-import com.sparta.webfluxchat.entity.ChatRoom;
-import com.sparta.webfluxchat.entity.ChatRoomUser;
-import com.sparta.webfluxchat.entity.ErrorEnum;
-import com.sparta.webfluxchat.entity.User;
+import com.sparta.webfluxchat.entity.*;
 import com.sparta.webfluxchat.repository.ChatRoomRepository;
 import com.sparta.webfluxchat.repository.ChatRoomUserRepository;
+import com.sparta.webfluxchat.repository.FriendRepository;
 import com.sparta.webfluxchat.repository.UserRepository;
 import com.sparta.webfluxchat.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +27,7 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
+    private final FriendRepository friendRepository;
     private static final Logger logger = LoggerFactory.getLogger(ChatRoomService.class);
 
     @Transactional
@@ -73,5 +73,22 @@ public class ChatRoomService {
             return UserOptional.get();
         }
         throw new IllegalArgumentException(ErrorEnum.NOT_FOUND_USER.getMessage());
+    }
+
+    public List<FriendDto> findAttendants(Long roomnumber, Long userId) {
+        List<ChatRoomUser> ChatRoomUsers = chatRoomUserRepository.findByChatRoomId(roomnumber);
+
+        List<FriendDto> friendDtos = new ArrayList<>();
+        for (ChatRoomUser chatRoomUser : ChatRoomUsers) {
+            Long friendId = chatRoomUser.getUser().getId();
+            Friend friend = friendRepository.findByUserIdAndFriendId(userId, friendId);
+            User friendUser = findUserByIdAndCheckPresent(friendId);
+
+            FriendDto friendDto = new FriendDto(friendId, friend.getFriendName(), friendUser.getName(), friendUser.getImageUrl());
+            friendDtos.add(friendDto);
+        }
+
+        return friendDtos;
+        // 유효성 검사하고 friendDto 에 담아서 보내줘야 함. 자기 자신을 빼고 보내주는 것이 낫나???? 모르겠네
     }
 }
