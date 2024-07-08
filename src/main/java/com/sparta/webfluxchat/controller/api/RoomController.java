@@ -25,6 +25,7 @@ public class RoomController {
         List<ChatRoom> chatRooms = chatRoomService.chatLists(userDetails);
         model.addAttribute("chatRooms", chatRooms);
         model.addAttribute("name", userDetails.getUser().getUsername());
+        model.addAttribute("userId", userDetails.getUser().getId());
         return "chatRoom";
     }
 

@@ -5,6 +5,7 @@ import com.sparta.webfluxchat.entity.User;
 import com.sparta.webfluxchat.repository.UserRepository;
 import com.sparta.webfluxchat.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatService {
 
     private final UserRepository userRepository;
@@ -35,6 +37,7 @@ public class ChatService {
     @Transactional
     public Mono<Message> saveSocketMessage(String message, Long roomnumber, Long id) {
 
+        log.info("saveSocktMessage called with message: {}, roomnumber : {}, id: {}", message, roomnumber, id);
         User user = userRepository.findById(id).orElseThrow();
 
         Message msg = new Message(message, System.currentTimeMillis(), id, user.getUsername());

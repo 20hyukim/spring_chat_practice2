@@ -8,4 +8,6 @@ import lombok.Setter;
 public class HelloMessage {
     private String name;
     private String message;
+    private Long roomId;
+    private Long userId;
 }
