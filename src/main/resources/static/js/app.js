@@ -1,12 +1,15 @@
 const stompClient = new StompJs.Client({
-    brokerURL: 'ws://ec2-13-125-52-207.ap-northeast-2.compute.amazonaws.com:8080/greeting-websocket'
+    brokerURL: 'ws://localhost:8080/greeting-websocket'
 });
+
+let roomNumber = 111; // 일단 예시로 방 번호 111로 설정
 
 stompClient.onConnect = (frame) => {
     setConnected(true);
     console.log('Connected: ' + frame);
     stompClient.subscribe('/topic/greetings', (greeting) => {
-        showGreeting(JSON.parse(greeting.body).content);
+        const message = JSON.parse(greeting.body);
+        showGreeting(message);
     });
 };
 
@@ -55,7 +58,7 @@ function sendName() {
 }
 
 function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + message + "</td></tr>");
+    $("#greetings").append("<tr><td>" + message.username + "  " + message.content + "</td></tr>");
 }
 
 $(function () {

@@ -1,7 +1,10 @@
 package com.sparta.webfluxchat.service;
 
 import com.sparta.webfluxchat.entity.Message;
+import com.sparta.webfluxchat.entity.User;
+import com.sparta.webfluxchat.repository.UserRepository;
 import com.sparta.webfluxchat.security.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +15,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
+@RequiredArgsConstructor
 public class ChatService {
 
+    private final UserRepository userRepository;
     private static final Logger logger = LoggerFactory.getLogger(ChatService.class);
 
     @Autowired
@@ -22,6 +27,17 @@ public class ChatService {
     @Transactional
     public Mono<Message> saveMessage(String message, Long roomnumber, UserDetailsImpl userDetails) {
         Message msg = new Message(message, System.currentTimeMillis(), userDetails.getUser().getId(), userDetails.getUser().getUsername());
+        String collectionName = "messages_room_" + roomnumber;
+        return reactiveMongoTemplate.save(msg, collectionName);
+    }
+
+
+    @Transactional
+    public Mono<Message> saveSocketMessage(String message, Long roomnumber, Long id) {
+
+        User user = userRepository.findById(id).orElseThrow();
+
+        Message msg = new Message(message, System.currentTimeMillis(), id, user.getUsername());
         String collectionName = "messages_room_" + roomnumber;
         return reactiveMongoTemplate.save(msg, collectionName);
     }
