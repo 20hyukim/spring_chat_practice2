@@ -10,10 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +53,14 @@ public class ChatService {
     public Flux<Message> findMessagesByRoomId(Long roomId) {
         String collectionName = "messages_room_" + roomId;
         logger.info("Finding messages in collection: {}", collectionName);
+        return reactiveMongoTemplate.findAll(Message.class, collectionName);
+    }
+
+    @Transactional
+    public Flux<Message> getChatHistory(Long roomId) {
+        String collectionName = "messages_room_" + roomId;
+        logger.info("Finding messages in collection: {}", collectionName);
+
         return reactiveMongoTemplate.findAll(Message.class, collectionName);
     }
 }

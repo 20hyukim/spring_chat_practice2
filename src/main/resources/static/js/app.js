@@ -2,15 +2,17 @@ const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8080/greeting-websocket'
 });
 
-let roomNumber = 110; // 일단 예시로 방 번호 111로 설정
+let roomNumber = 110; // 일단 예시로 방 번호 110로 설정
 
 stompClient.onConnect = (frame) => {
+
     setConnected(true);
     console.log('Connected: ' + frame);
     stompClient.subscribe('/topic/greetings/' + roomNumber, (greeting) => {
         const message = JSON.parse(greeting.body);
         showGreeting(message);
     });
+
 };
 
 stompClient.onWebSocketError = (error) => {
@@ -33,6 +35,7 @@ function setConnected(connected) {
     }
     $("#greetings").html("");
 }
+
 
 function connect() {
     stompClient.activate();
@@ -61,6 +64,7 @@ function sendName() {
 function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message.username + "  " + message.content + "</td></tr>");
 }
+
 
 $(function () {
     $("form").on('submit', (e) => e.preventDefault());

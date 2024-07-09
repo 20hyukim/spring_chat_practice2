@@ -35,8 +35,8 @@ public class ChatController {
 
     @GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Message> streamMessages(@RequestParam("roomId") Long roomId) {
-        return chatService.findMessagesByRoomId(roomId)
-                .mergeWith(sink.asFlux().delayElements(Duration.ofMillis(200)));
+        return chatService.findMessagesByRoomId(roomId).mergeWith(sink.asFlux().delayElements(Duration.ofMillis(200)));
+
     }
 
     @GetMapping("/send")
